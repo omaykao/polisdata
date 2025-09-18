@@ -1,0 +1,6 @@
+{
+  "framework": "nextjs",
+  "buildCommand": "cd polisdata && npm run build",
+  "installCommand": "cd polisdata && npm install",
+  "outputDirectory": "polisdata/.next"
+}

@@ -1,0 +1,10 @@
+{
+  "name": "polisdata-root",
+  "private": true,
+  "scripts": {
+    "build": "cd polisdata && npm run build",
+    "start": "cd polisdata && npm start",
+    "dev": "cd polisdata && npm run dev",
+    "install": "cd polisdata && npm install"
+  }
+}
