@@ -9,7 +9,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { SocialMention } from "@/lib/types";
+import { SocialMediaMention } from "@/lib/types";
 import { formatNumber, getRelativeTime } from "@/lib/utils";
 import {
   MessageCircle,
@@ -33,7 +33,7 @@ import {
 } from "lucide-react";
 
 interface SocialMentionsFeedProps {
-  mentions: SocialMention[];
+  mentions: SocialMediaMention[];
   onRespond?: (mentionId: string) => void;
   onFlag?: (mentionId: string, reason: string) => void;
   onAnalyze?: (mentionId: string) => void;
@@ -50,7 +50,7 @@ export function SocialMentionsFeed({
   const [sentimentFilter, setSentimentFilter] = useState<string>("all");
   const [timeRange, setTimeRange] = useState<string>("24h");
 
-  const getPlatformIcon = (platform: SocialMention['platform']) => {
+  const getPlatformIcon = (platform: SocialMediaMention['platform']) => {
     switch (platform) {
       case 'twitter':
         return <Twitter className="h-4 w-4" />;
@@ -67,7 +67,7 @@ export function SocialMentionsFeed({
     }
   };
 
-  const getPlatformColor = (platform: SocialMention['platform']) => {
+  const getPlatformColor = (platform: SocialMediaMention['platform']) => {
     switch (platform) {
       case 'twitter':
         return 'text-blue-400 bg-blue-950';
@@ -84,7 +84,7 @@ export function SocialMentionsFeed({
     }
   };
 
-  const getSentimentIcon = (sentiment: SocialMention['sentiment']) => {
+  const getSentimentIcon = (sentiment: SocialMediaMention['sentiment']) => {
     switch (sentiment) {
       case 'positive':
         return <TrendingUp className="h-4 w-4 text-green-600" />;
@@ -95,7 +95,7 @@ export function SocialMentionsFeed({
     }
   };
 
-  const getSentimentColor = (sentiment: SocialMention['sentiment']) => {
+  const getSentimentColor = (sentiment: SocialMediaMention['sentiment']) => {
     switch (sentiment) {
       case 'positive':
         return 'text-green-600 bg-green-50 dark:bg-green-950';
@@ -133,7 +133,7 @@ export function SocialMentionsFeed({
     if (searchQuery) {
       filtered = filtered.filter(mention =>
         mention.content.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        mention.author.toLowerCase().includes(searchQuery.toLowerCase())
+        mention.authorName?.toLowerCase().includes(searchQuery.toLowerCase())
       );
     }
 
@@ -166,13 +166,13 @@ export function SocialMentionsFeed({
       default:
         cutoffTime.setFullYear(2020); // All time
     }
-    filtered = filtered.filter(mention => new Date(mention.timestamp) >= cutoffTime);
+    filtered = filtered.filter(mention => new Date(mention.publishedAt) >= cutoffTime);
 
     // Sort by reach and timestamp
     filtered.sort((a, b) => {
       const reachDiff = b.reach - a.reach;
       if (reachDiff !== 0) return reachDiff;
-      return new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime();
+      return new Date(b.publishedAt).getTime() - new Date(a.publishedAt).getTime();
     });
 
     return filtered;
@@ -183,7 +183,7 @@ export function SocialMentionsFeed({
     const negative = filteredMentions.filter(m => m.sentiment === 'negative').length;
     const neutral = filteredMentions.filter(m => m.sentiment === 'neutral').length;
     const totalReach = filteredMentions.reduce((sum, m) => sum + m.reach, 0);
-    const totalEngagement = filteredMentions.reduce((sum, m) => sum + m.engagement, 0);
+    const totalEngagement = filteredMentions.reduce((sum, m) => sum + m.likes + m.shares + m.comments, 0);
 
     return {
       total: filteredMentions.length,
@@ -325,13 +325,13 @@ export function SocialMentionsFeed({
                   <div className="flex items-start justify-between mb-3">
                     <div className="flex items-start gap-3 flex-1">
                       <Avatar className="h-10 w-10">
-                        <AvatarImage src={`https://api.dicebear.com/7.x/avataaars/svg?seed=${mention.author}`} />
-                        <AvatarFallback>{mention.author.charAt(0).toUpperCase()}</AvatarFallback>
+                        <AvatarImage src={`https://api.dicebear.com/7.x/avataaars/svg?seed=${mention.authorName || 'anonymous'}`} />
+                        <AvatarFallback>{(mention.authorName || 'A').charAt(0).toUpperCase()}</AvatarFallback>
                       </Avatar>
                       <div className="flex-1">
                         <div className="flex items-center gap-2 mb-1">
-                          <p className="font-semibold">{mention.author}</p>
-                          {getInfluencerBadge(mention.verified, mention.reach)}
+                          <p className="font-semibold">{mention.authorName || 'Anônimo'}</p>
+                          {getInfluencerBadge(mention.isInfluencer, mention.reach)}
                           <Badge variant="outline" className={getPlatformColor(mention.platform)}>
                             {getPlatformIcon(mention.platform)}
                             <span className="ml-1">
@@ -350,7 +350,7 @@ export function SocialMentionsFeed({
                           </Badge>
                         </div>
                         <p className="text-sm text-muted-foreground mb-2">
-                          {getRelativeTime(mention.timestamp)}
+                          {getRelativeTime(mention.publishedAt)}
                         </p>
                         <p className="text-sm leading-relaxed mb-3">{mention.content}</p>
                         <div className="flex items-center gap-6 text-sm text-muted-foreground">
@@ -360,7 +360,7 @@ export function SocialMentionsFeed({
                           </span>
                           <span className="flex items-center gap-1">
                             <Heart className="h-4 w-4" />
-                            {formatNumber(mention.engagement)} engajamento
+                            {formatNumber(mention.likes + mention.shares + mention.comments)} engajamento
                           </span>
                           {mention.isInfluencer && (
                             <Badge variant="secondary">

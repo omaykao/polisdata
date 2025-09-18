@@ -8,6 +8,7 @@ import {
   CRMPipelineCard,
   PipelineStage,
   Notification,
+  NotificationCategory,
   Activity,
   DashboardKPIs
 } from './types';
@@ -71,7 +72,7 @@ export function generatePolitician(): Politician {
     position: faker.helpers.arrayElement(POSITIONS),
     avatarUrl: faker.image.avatar(),
     email: faker.internet.email(),
-    phone: faker.phone.number('+55 11 9####-####'),
+    phone: faker.phone.number({ style: 'national' }),
 
     perceptionScore: faker.number.int({ min: 40, max: 90 }),
     scoreTrend: faker.number.float({ min: -15, max: 15, multipleOf: 0.1 }),
@@ -245,7 +246,7 @@ export function generateCRMCard(): CRMPipelineCard {
 
     contactInfo: {
       email: faker.internet.email(),
-      phone: faker.phone.number('+55 11 9####-####'),
+      phone: faker.phone.number({ style: 'national' }),
       preferredContact: faker.helpers.arrayElement(['email', 'phone']) as 'email' | 'phone'
     },
 
@@ -274,7 +275,7 @@ export function generateNotification(): Notification {
     id: faker.string.uuid(),
     type: faker.helpers.arrayElement(['alert', 'informative', 'task']) as 'alert' | 'informative' | 'task',
     priority: faker.helpers.arrayElement(['critical', 'high', 'medium', 'low']) as 'critical' | 'high' | 'medium' | 'low',
-    category: faker.helpers.arrayElement(categories) as string,
+    category: faker.helpers.arrayElement(categories) as NotificationCategory,
 
     title: faker.helpers.arrayElement([
       'Queda abrupta no score de percepção',
@@ -300,7 +301,7 @@ export function generateNotification(): Notification {
       { value: 'read', weight: 3 },
       { value: 'resolved', weight: 1 },
       { value: 'dismissed', weight: 1 }
-    ]) as 'new' | 'read' | 'resolved' | 'dismissed',
+    ]) as 'unread' | 'read' | 'resolved' | 'dismissed',
 
     createdAt: faker.date.recent({ days: 7 }),
     readAt: faker.date.recent({ days: 5 }),

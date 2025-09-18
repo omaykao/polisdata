@@ -427,7 +427,7 @@ export function ReportGenerator({
                 setConfig({
                   ...config,
                   schedule: value ? {
-                    frequency: value as ReportConfig['schedule']['frequency'],
+                    frequency: value as 'once' | 'daily' | 'weekly' | 'monthly',
                     recipients: config.schedule?.recipients || [],
                   } : undefined,
                 })

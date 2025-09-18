@@ -305,17 +305,17 @@ export default function ReportsPage() {
                         </div>
                         <Badge variant="outline">
                           <Calendar className="mr-1 h-3 w-3" />
-                          {report.schedule.frequency === 'daily' ? 'Diário' :
-                           report.schedule.frequency === 'weekly' ? 'Semanal' :
-                           report.schedule.frequency === 'monthly' ? 'Mensal' : 'Único'}
+                          {report.schedule?.frequency === 'daily' ? 'Diário' :
+                           report.schedule?.frequency === 'weekly' ? 'Semanal' :
+                           report.schedule?.frequency === 'monthly' ? 'Mensal' : 'Único'}
                         </Badge>
                       </div>
-                      {report.schedule.nextRun && (
+                      {report.schedule?.nextRun && (
                         <div className="flex items-center gap-2 text-sm">
                           <Clock className="h-4 w-4 text-muted-foreground" />
                           <span className="text-muted-foreground">Próxima execução:</span>
                           <span className="font-medium">
-                            {formatDate(report.schedule.nextRun)}
+                            {formatDate(report.schedule?.nextRun)}
                           </span>
                         </div>
                       )}

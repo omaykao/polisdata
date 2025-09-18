@@ -234,7 +234,13 @@ export default function CampaignAnalyticsPage() {
                   from: dateRange.from,
                   to: dateRange.to,
                 }}
-                onSelect={(range: { from?: Date; to?: Date } | undefined) => setDateRange(range || { from: undefined, to: undefined })}
+                onSelect={(range: { from?: Date; to?: Date } | undefined) => {
+                  if (range) {
+                    setDateRange({ from: range.from, to: range.to });
+                  } else {
+                    setDateRange({ from: undefined, to: undefined });
+                  }
+                }}
                 numberOfMonths={2}
               />
             </PopoverContent>

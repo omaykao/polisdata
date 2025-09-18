@@ -81,7 +81,7 @@ export interface WhatsAppCampaign {
 export interface SocialMediaMention {
   id: string;
   politicianId: string;
-  platform: 'twitter' | 'facebook' | 'instagram' | 'news';
+  platform: 'twitter' | 'facebook' | 'instagram' | 'youtube' | 'news';
   sourceUrl: string;
   authorHandle?: string;
   authorName?: string;

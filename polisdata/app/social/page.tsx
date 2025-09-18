@@ -125,7 +125,7 @@ export default function SocialMonitoringPage() {
         </div>
       </div>
 
-      <Tabs value={activeTab} onValueChange={(value: "feed" | "trending" | "alerts") => setActiveTab(value)}>
+      <Tabs value={activeTab} onValueChange={(value: string) => setActiveTab(value as "feed" | "trending" | "alerts")}>
         <TabsList className="grid w-full grid-cols-3 lg:w-[400px]">
           <TabsTrigger value="feed">
             <MessageCircle className="mr-2 h-4 w-4" />
