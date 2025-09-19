@@ -60,8 +60,10 @@ let politicianNameIndex = 0;
 
 export function generatePolitician(): Politician {
   const now = new Date();
-  const contractStart = faker.date.past({ years: 1 });
-  const contractEnd = faker.date.future({ years: 1 });
+  // Contratos iniciados entre junho e agosto
+  const contractStart = generateDateInCampaignPeriod({ monthRange: { start: 5, end: 7 } });
+  // Contratos terminando em setembro
+  const contractEnd = generateDateInCampaignPeriod({ monthRange: { start: 8, end: 8 }, future: true });
 
   // Use Brazilian names in sequence, cycling through the list
   const name = BRAZILIAN_POLITICIANS[politicianNameIndex % BRAZILIAN_POLITICIANS.length];
@@ -193,7 +195,7 @@ export function generatePolitician(): Politician {
 
     perceptionScore: faker.number.int({ min: 40, max: 90 }),
     scoreTrend: faker.number.float({ min: -15, max: 15, multipleOf: 0.1 }),
-    lastAnalysisDate: faker.date.recent({ days: 7 }),
+    lastAnalysisDate: generateDateInCampaignPeriod({ days: 7 }),
 
     status: faker.helpers.weightedArrayElement([
       { value: 'active', weight: 8 },
@@ -221,7 +223,7 @@ export function generateSentimentAnalysis(): SentimentAnalysis {
     neutral,
     confidence: faker.number.float({ min: 0.7, max: 0.95, multipleOf: 0.01 }),
     sampleSize: faker.number.int({ min: 500, max: 5000 }),
-    date: faker.date.recent({ days: 1 })
+    date: generateDateInCampaignPeriod({ days: 1 })
   };
 }
 
@@ -250,7 +252,7 @@ export function generateEmergingNarratives(count: number = 3): EmergingNarrative
       ['reforma', 'economia', 'educação', 'saúde', 'segurança', 'corrupção', 'desenvolvimento', 'emprego'],
       faker.number.int({ min: 2, max: 5 })
     ),
-    firstDetected: faker.date.recent({ days: 14 }),
+    firstDetected: generateDateInCampaignPeriod({ days: 14 }),
     status: faker.helpers.arrayElement(['emerging', 'trending', 'declining', 'resolved']) as 'emerging' | 'trending' | 'declining' | 'resolved'
   }));
 }
@@ -287,13 +289,50 @@ export function generateCampaign(politicianId: string): WhatsAppCampaign {
     engagementScore: faker.number.int({ min: 40, max: 90 }),
 
     status: faker.helpers.arrayElement(['draft', 'scheduled', 'active', 'paused', 'completed']) as 'draft' | 'scheduled' | 'active' | 'paused' | 'completed',
-    scheduledDate: faker.date.future({ years: 0.1 }),
-    startedAt: faker.date.recent({ days: 7 }),
-    completedAt: faker.date.recent({ days: 1 }),
+    scheduledDate: generateDateInCampaignPeriod({ monthRange: { start: 7, end: 8 }, future: true }),
+    startedAt: generateDateInCampaignPeriod({ days: 7 }),
+    completedAt: generateDateInCampaignPeriod({ days: 1 }),
 
-    createdAt: faker.date.past({ years: 0.5 }),
-    updatedAt: new Date()
+    createdAt: generateDateInCampaignPeriod({ monthRange: { start: 5, end: 6 } }),
+    updatedAt: generateDateInCampaignPeriod({ days: 1 })
   };
+}
+
+// Helper function to generate dates between June and September
+function generateDateInCampaignPeriod(options?: {
+  past?: boolean,
+  future?: boolean,
+  days?: number,
+  monthRange?: { start: number, end: number }
+}): Date {
+  const now = new Date();
+  const currentYear = now.getFullYear();
+
+  // Default to June-September (months 5-8 in JavaScript, 0-indexed)
+  const startMonth = options?.monthRange?.start || 5; // June
+  const endMonth = options?.monthRange?.end || 8; // September
+
+  // Generate a random month between June and September
+  const month = faker.number.int({ min: startMonth, max: endMonth });
+
+  // Generate a random day within the month
+  const daysInMonth = new Date(currentYear, month + 1, 0).getDate();
+  const day = faker.number.int({ min: 1, max: daysInMonth });
+
+  let baseDate = new Date(currentYear, month, day);
+
+  // If we need a date in the past few days, adjust from the base date
+  if (options?.days) {
+    const offsetMs = options.days * 24 * 60 * 60 * 1000;
+    baseDate = new Date(baseDate.getTime() - Math.random() * offsetMs);
+  }
+
+  // Ensure the date is not in the future
+  if (baseDate > now && !options?.future) {
+    baseDate = now;
+  }
+
+  return baseDate;
 }
 
 // Brazilian social media authors
@@ -332,8 +371,8 @@ export function generateSocialMention(politicianId: string): SocialMediaMention 
     isInfluencer: faker.datatype.boolean({ probability: 0.1 }),
     influencerScore: faker.number.int({ min: 60, max: 100 }),
 
-    publishedAt: faker.date.recent({ days: 1 }),
-    capturedAt: new Date()
+    publishedAt: generateDateInCampaignPeriod({ days: 1 }),
+    capturedAt: generateDateInCampaignPeriod({ days: 1 })
   };
 }
 
@@ -393,13 +432,13 @@ export function generateCRMCard(): CRMPipelineCard {
     proposalValue: faker.number.int({ min: 5000, max: 100000 }),
     notes: faker.lorem.sentence(),
     nextAction: faker.helpers.arrayElement(['Enviar proposta', 'Agendar reunião', 'Enviar contrato', 'Follow-up']),
-    nextActionDate: faker.date.future({ years: 0.1 }),
+    nextActionDate: generateDateInCampaignPeriod({ monthRange: { start: 7, end: 8 }, future: true }),
 
     probability: faker.number.int({ min: 10, max: 90 }),
-    estimatedCloseDate: faker.date.future({ years: 0.2 }),
+    estimatedCloseDate: generateDateInCampaignPeriod({ monthRange: { start: 8, end: 8 }, future: true }),
 
-    createdAt: faker.date.past({ years: 0.3 }),
-    updatedAt: new Date()
+    createdAt: generateDateInCampaignPeriod({ monthRange: { start: 5, end: 6 } }),
+    updatedAt: generateDateInCampaignPeriod({ days: 1 })
   };
 }
 
@@ -554,8 +593,8 @@ export function generateSocialMediaNotification(): Notification {
       { value: 'resolved', weight: 1 },
       { value: 'dismissed', weight: 1 }
     ]) as 'unread' | 'read' | 'resolved' | 'dismissed',
-    createdAt: faker.date.recent({ days: 2 }),
-    readAt: faker.date.recent({ days: 1 }),
+    createdAt: generateDateInCampaignPeriod({ days: 2 }),
+    readAt: generateDateInCampaignPeriod({ days: 1 }),
     resolvedAt: undefined
   };
 }
@@ -603,9 +642,9 @@ export function generateNotification(): Notification {
       { value: 'dismissed', weight: 1 }
     ]) as 'unread' | 'read' | 'resolved' | 'dismissed',
 
-    createdAt: faker.date.recent({ days: 7 }),
-    readAt: faker.date.recent({ days: 5 }),
-    resolvedAt: faker.date.recent({ days: 3 })
+    createdAt: generateDateInCampaignPeriod({ days: 7 }),
+    readAt: generateDateInCampaignPeriod({ days: 5 }),
+    resolvedAt: generateDateInCampaignPeriod({ days: 3 })
   };
 }
 
@@ -621,7 +660,7 @@ export function generateActivity(politicianName: string): Activity {
       'Alerta de menções negativas',
       'Score de percepção atualizado'
     ]),
-    timestamp: faker.date.recent({ days: 0.1 })
+    timestamp: generateDateInCampaignPeriod({ days: 1 })
   };
 }
 

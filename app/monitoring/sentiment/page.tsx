@@ -61,13 +61,13 @@ import {
 
 // Mock data para análise de sentimento
 const sentimentOverTime = [
-  { date: "2024-01-01", positivo: 65, neutro: 25, negativo: 10 },
-  { date: "2024-01-02", positivo: 62, neutro: 28, negativo: 10 },
-  { date: "2024-01-03", positivo: 58, neutro: 30, negativo: 12 },
-  { date: "2024-01-04", positivo: 60, neutro: 25, negativo: 15 },
-  { date: "2024-01-05", positivo: 67, neutro: 23, negativo: 10 },
-  { date: "2024-01-06", positivo: 70, neutro: 20, negativo: 10 },
-  { date: "2024-01-07", positivo: 68, neutro: 22, negativo: 10 }
+  { date: "2024-06-01", positivo: 65, neutro: 25, negativo: 10 },
+  { date: "2024-06-08", positivo: 62, neutro: 28, negativo: 10 },
+  { date: "2024-06-15", positivo: 58, neutro: 30, negativo: 12 },
+  { date: "2024-06-22", positivo: 60, neutro: 25, negativo: 15 },
+  { date: "2024-07-01", positivo: 67, neutro: 23, negativo: 10 },
+  { date: "2024-07-08", positivo: 70, neutro: 20, negativo: 10 },
+  { date: "2024-07-15", positivo: 68, neutro: 22, negativo: 10 }
 ]
 
 const sentimentByPlatform = [
