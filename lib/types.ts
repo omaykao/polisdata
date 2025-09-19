@@ -16,7 +16,7 @@ export interface Politician {
 
   // Contract
   status: 'active' | 'inactive' | 'suspended';
-  contractedPlan: 'basic' | 'professional' | 'enterprise';
+  contractedPlan: 'basic' | 'campanha_monitoramento_ativo' | 'enterprise';
   contractStartDate: Date;
   contractEndDate: Date;
   accountManagerId: string;
@@ -131,7 +131,7 @@ export interface CRMPipelineCard {
 }
 
 export type PipelineStage =
-  | 'lead'
+  | 'candidato'
   | 'qualification'
   | 'proposal_sent'
   | 'negotiation'

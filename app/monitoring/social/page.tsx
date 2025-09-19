@@ -128,7 +128,104 @@ export default function SocialMediaMonitoringPage() {
     { name: "Negativo", value: 10, color: "var(--chart-negative)" },
   ];
 
-  const recentPosts: SocialPost[] = [
+  // Posts diferenciados por plataforma e sentimento
+  const facebookPosts: SocialPost[] = [
+    {
+      id: "fb1",
+      platform: "facebook",
+      author: "Maria Santos",
+      authorHandle: "maria.santos.oficial",
+      authorAvatar: "",
+      content: "Participei hoje da reunião sobre segurança pública no bairro. Muitas preocupações legítimas foram levantadas pelos moradores.",
+      timestamp: new Date(Date.now() - 2 * 60 * 60 * 1000),
+      engagement: { likes: 156, comments: 23, shares: 12 },
+      sentiment: "neutral",
+      reach: 8900,
+      relevanceScore: 7.2,
+      tags: ["Segurança", "Comunidade"],
+      isVerified: true,
+    },
+    {
+      id: "fb2",
+      platform: "facebook",
+      author: "Centro Comunitário Vila Nova",
+      authorHandle: "centrocomunitariovilanova",
+      authorAvatar: "",
+      content: "Agradecemos a visita do candidato e seu compromisso com nossa comunidade. Esperamos melhorias em breve!",
+      timestamp: new Date(Date.now() - 4 * 60 * 60 * 1000),
+      engagement: { likes: 234, comments: 45, shares: 67 },
+      sentiment: "positive",
+      reach: 15600,
+      relevanceScore: 8.1,
+      tags: ["Comunidade", "Visita", "Melhorias"],
+      isVerified: false,
+    },
+    {
+      id: "fb3",
+      platform: "facebook",
+      author: "João Pedro Almeida",
+      authorHandle: "joaopedro.almeida.sp",
+      authorAvatar: "",
+      content: "Decepcionado com as promessas não cumpridas. Já fazem 2 anos e nada mudou no bairro.",
+      timestamp: new Date(Date.now() - 6 * 60 * 60 * 1000),
+      engagement: { likes: 89, comments: 134, shares: 23 },
+      sentiment: "negative",
+      reach: 5400,
+      relevanceScore: 6.5,
+      tags: ["Promessas", "Crítica"],
+      isVerified: false,
+    },
+  ];
+
+  const instagramPosts: SocialPost[] = [
+    {
+      id: "ig1",
+      platform: "instagram",
+      author: "Carlos Mendes",
+      authorHandle: "@carlosmendes_oficial",
+      authorAvatar: "",
+      content: "Nossa equipe visitou as obras da nova escola. Em breve teremos mais 500 vagas para as crianças da região! 📚👶",
+      timestamp: new Date(Date.now() - 4 * 60 * 60 * 1000),
+      engagement: { likes: 890, comments: 134, shares: 89, views: 15600 },
+      sentiment: "positive",
+      reach: 25400,
+      relevanceScore: 9.1,
+      tags: ["Educação", "Obras", "Crianças"],
+      isVerified: true,
+    },
+    {
+      id: "ig2",
+      platform: "instagram",
+      author: "Influencer Político RJ",
+      authorHandle: "@politicarj",
+      authorAvatar: "",
+      content: "Análise: Como os candidatos estão usando as redes sociais para se conectar com os jovens eleitores 📱🇷🇸",
+      timestamp: new Date(Date.now() - 3 * 60 * 60 * 1000),
+      engagement: { likes: 2345, comments: 567, shares: 234, views: 45600 },
+      sentiment: "neutral",
+      reach: 67800,
+      relevanceScore: 8.7,
+      tags: ["Análise", "Jovens", "Redes Sociais"],
+      isVerified: true,
+    },
+    {
+      id: "ig3",
+      platform: "instagram",
+      author: "Movimento Estudantil",
+      authorHandle: "@movimento_estudantil_sp",
+      authorAvatar: "",
+      content: "Não aceitamos mais promessas vazias! Queremos ação real na educação! #MudancaAgora #EducacaoPrimeiro",
+      timestamp: new Date(Date.now() - 5 * 60 * 60 * 1000),
+      engagement: { likes: 1567, comments: 432, shares: 321, views: 23400 },
+      sentiment: "negative",
+      reach: 34500,
+      relevanceScore: 7.8,
+      tags: ["Educação", "Protesto", "Mudança"],
+      isVerified: false,
+    },
+  ];
+
+  const otherPlatformPosts: SocialPost[] = [
     {
       id: "1",
       platform: "twitter",
@@ -205,6 +302,39 @@ export default function SocialMediaMonitoringPage() {
       isVerified: false,
     },
   ];
+
+  // Função para filtrar posts baseado na plataforma e sentimento
+  const getFilteredPosts = (): SocialPost[] => {
+    let posts: SocialPost[] = [];
+
+    if (selectedPlatform === "facebook") {
+      posts = facebookPosts;
+    } else if (selectedPlatform === "instagram") {
+      posts = instagramPosts;
+    } else if (selectedPlatform === "all") {
+      posts = [...facebookPosts, ...instagramPosts, ...otherPlatformPosts];
+    } else {
+      posts = otherPlatformPosts.filter(p => p.platform === selectedPlatform);
+    }
+
+    // Filtrar por sentimento
+    if (selectedSentiment !== "all") {
+      posts = posts.filter(post => post.sentiment === selectedSentiment);
+    }
+
+    // Filtrar por busca
+    if (searchQuery) {
+      posts = posts.filter(post =>
+        post.content.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        post.author.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        post.tags.some(tag => tag.toLowerCase().includes(searchQuery.toLowerCase()))
+      );
+    }
+
+    return posts;
+  };
+
+  const recentPosts = getFilteredPosts();
 
   const topInfluencers = [
     { name: "Dr. Roberto Silva", handle: "@drroberto", followers: "2.3M", engagement: "8.5%", platform: "twitter", verified: true },
@@ -340,28 +470,15 @@ export default function SocialMediaMonitoringPage() {
             className="pl-9"
           />
         </div>
-        <Select value={selectedPlatform} onValueChange={setSelectedPlatform}>
+        <Select value={selectedTimeframe} onValueChange={setSelectedTimeframe}>
           <SelectTrigger className="w-[150px]">
-            <SelectValue placeholder="Plataforma" />
+            <SelectValue placeholder="Período" />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="all">Todas</SelectItem>
-            <SelectItem value="facebook">Facebook</SelectItem>
-            <SelectItem value="instagram">Instagram</SelectItem>
-            <SelectItem value="twitter">Twitter</SelectItem>
-            <SelectItem value="youtube">YouTube</SelectItem>
-            <SelectItem value="tiktok">TikTok</SelectItem>
-          </SelectContent>
-        </Select>
-        <Select value={selectedSentiment} onValueChange={setSelectedSentiment}>
-          <SelectTrigger className="w-[150px]">
-            <SelectValue placeholder="Sentimento" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="all">Todos</SelectItem>
-            <SelectItem value="positive">Positivo</SelectItem>
-            <SelectItem value="neutral">Neutro</SelectItem>
-            <SelectItem value="negative">Negativo</SelectItem>
+            <SelectItem value="1h">Última hora</SelectItem>
+            <SelectItem value="24h">Últimas 24h</SelectItem>
+            <SelectItem value="7d">Últimos 7 dias</SelectItem>
+            <SelectItem value="30d">Últimos 30 dias</SelectItem>
           </SelectContent>
         </Select>
       </div>
@@ -545,28 +662,94 @@ export default function SocialMediaMonitoringPage() {
                 </CardHeader>
                 <CardContent>
                   <div className="space-y-4">
-                    {platformData.map((platform) => (
-                      <div key={platform.name} className="space-y-2">
-                        <div className="flex items-center justify-between text-sm">
-                          <span className="flex items-center gap-2">
-                            <span className={getPlatformColor(platform.name.toLowerCase())}>
-                              {getPlatformIcon(platform.name.toLowerCase())}
-                            </span>
-                            {platform.name}
-                          </span>
-                          <div className="flex items-center gap-2">
-                            <span className="font-medium">{platform.posts}</span>
-                            <span className={cn(
-                              "text-xs",
-                              platform.growth > 0 ? "text-green-600" : "text-red-600"
-                            )}>
-                              {platform.growth > 0 ? "↑" : "↓"} {Math.abs(platform.growth)}%
-                            </span>
-                          </div>
-                        </div>
-                        <Progress value={(platform.posts / Math.max(...platformData.map(p => p.posts))) * 100} />
+                    {/* Botões de filtro para todas as redes sociais */}
+                    <div className="space-y-2">
+                      <div className="grid grid-cols-2 gap-2">
+                        <Button
+                          variant={selectedPlatform === "instagram" ? "default" : "outline"}
+                          size="sm"
+                          onClick={() => setSelectedPlatform("instagram")}
+                          className="w-full"
+                        >
+                          <span className="mr-2">📷</span>
+                          Instagram
+                        </Button>
+                        <Button
+                          variant={selectedPlatform === "facebook" ? "default" : "outline"}
+                          size="sm"
+                          onClick={() => setSelectedPlatform("facebook")}
+                          className="w-full"
+                        >
+                          <span className="mr-2">📘</span>
+                          Facebook
+                        </Button>
                       </div>
-                    ))}
+                      <div className="grid grid-cols-3 gap-2">
+                        <Button
+                          variant={selectedPlatform === "twitter" ? "default" : "outline"}
+                          size="sm"
+                          onClick={() => setSelectedPlatform("twitter")}
+                          className="w-full"
+                        >
+                          <span className="mr-1">🐦</span>
+                          Twitter
+                        </Button>
+                        <Button
+                          variant={selectedPlatform === "youtube" ? "default" : "outline"}
+                          size="sm"
+                          onClick={() => setSelectedPlatform("youtube")}
+                          className="w-full"
+                        >
+                          <span className="mr-1">📺</span>
+                          YouTube
+                        </Button>
+                        <Button
+                          variant={selectedPlatform === "tiktok" ? "default" : "outline"}
+                          size="sm"
+                          onClick={() => setSelectedPlatform("tiktok")}
+                          className="w-full"
+                        >
+                          <span className="mr-1">🎵</span>
+                          TikTok
+                        </Button>
+                      </div>
+                    </div>
+
+                    {/* Botão para mostrar todos */}
+                    <Button
+                      variant={selectedPlatform === "all" ? "default" : "ghost"}
+                      size="sm"
+                      onClick={() => setSelectedPlatform("all")}
+                      className="w-full"
+                    >
+                      <Globe className="mr-2 h-4 w-4" />
+                      Mostrar Todas as Plataformas
+                    </Button>
+
+                    <div className="border-t pt-4">
+                      {platformData.map((platform) => (
+                        <div key={platform.name} className="space-y-2 mb-3">
+                          <div className="flex items-center justify-between text-sm">
+                            <span className="flex items-center gap-2">
+                              <span className={getPlatformColor(platform.name.toLowerCase())}>
+                                {getPlatformIcon(platform.name.toLowerCase())}
+                              </span>
+                              {platform.name}
+                            </span>
+                            <div className="flex items-center gap-2">
+                              <span className="font-medium">{platform.posts}</span>
+                              <span className={cn(
+                                "text-xs",
+                                platform.growth > 0 ? "text-green-600" : "text-red-600"
+                              )}>
+                                {platform.growth > 0 ? "↑" : "↓"} {Math.abs(platform.growth)}%
+                              </span>
+                            </div>
+                          </div>
+                          <Progress value={(platform.posts / Math.max(...platformData.map(p => p.posts))) * 100} />
+                        </div>
+                      ))}
+                    </div>
                   </div>
                 </CardContent>
               </Card>
@@ -605,6 +788,52 @@ export default function SocialMediaMonitoringPage() {
                         <p className="text-lg font-bold">{item.value}%</p>
                       </div>
                     ))}
+                  </div>
+
+                  {/* Botões de filtro por sentimento */}
+                  <div className="mt-4 space-y-2 border-t pt-4">
+                    <p className="text-xs text-muted-foreground mb-2">Filtrar posts por sentimento:</p>
+                    <div className="grid grid-cols-1 gap-2">
+                      <Button
+                        variant={selectedSentiment === "positive" ? "default" : "outline"}
+                        size="sm"
+                        onClick={() => setSelectedSentiment("positive")}
+                        className="w-full justify-start"
+                      >
+                        <ThumbsUp className="mr-2 h-4 w-4 text-green-600" />
+                        <span>Positivo</span>
+                        <span className="ml-auto text-xs">58%</span>
+                      </Button>
+                      <Button
+                        variant={selectedSentiment === "neutral" ? "default" : "outline"}
+                        size="sm"
+                        onClick={() => setSelectedSentiment("neutral")}
+                        className="w-full justify-start"
+                      >
+                        <MessageSquare className="mr-2 h-4 w-4 text-gray-600" />
+                        <span>Neutro</span>
+                        <span className="ml-auto text-xs">32%</span>
+                      </Button>
+                      <Button
+                        variant={selectedSentiment === "negative" ? "default" : "outline"}
+                        size="sm"
+                        onClick={() => setSelectedSentiment("negative")}
+                        className="w-full justify-start"
+                      >
+                        <ThumbsDown className="mr-2 h-4 w-4 text-red-600" />
+                        <span>Negativo</span>
+                        <span className="ml-auto text-xs">10%</span>
+                      </Button>
+                    </div>
+                    <Button
+                      variant={selectedSentiment === "all" ? "default" : "ghost"}
+                      size="sm"
+                      onClick={() => setSelectedSentiment("all")}
+                      className="w-full mt-2"
+                    >
+                      <Activity className="mr-2 h-4 w-4" />
+                      Todos os Sentimentos
+                    </Button>
                   </div>
                 </CardContent>
               </Card>

@@ -44,7 +44,7 @@ const navMain = [
     isActive: true,
   },
   {
-    title: "CRM",
+    title: "Engajamento de Campanha",
     url: "/crm",
     icon: Users,
   },

@@ -163,7 +163,7 @@ export default function EmergingNarrativesPage() {
       sources: ["Facebook", "Twitter", "WhatsApp", "Notícias"],
       startDate: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000),
       peakDate: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000),
-      geography: ["Todo o Brasil"],
+      geography: ["Rio de Janeiro"],
       demographics: {
         ageGroups: [
           { group: "18-25", percentage: 15 },
@@ -227,7 +227,7 @@ export default function EmergingNarrativesPage() {
       keywords: ["pesquisas eleitorais", "metodologia", "confiabilidade", "eleições"],
       sources: ["Twitter", "Facebook", "WhatsApp", "YouTube"],
       startDate: new Date(Date.now() - 5 * 24 * 60 * 60 * 1000),
-      geography: ["Todo o Brasil"],
+      geography: ["São Paulo"],
       demographics: {
         ageGroups: [
           { group: "18-25", percentage: 25 },

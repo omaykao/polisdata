@@ -19,7 +19,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "PolisData - Inteligência Política",
+  title: "CampanhaPro - Inteligência Política",
   description: "Plataforma de inteligência política com análise de percepção pública baseada em IA",
 };
 

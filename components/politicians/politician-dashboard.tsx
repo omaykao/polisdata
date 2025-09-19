@@ -91,8 +91,8 @@ export function PoliticianDashboard({
                   <Badge variant="outline">
                     {politician.contractedPlan === "basic"
                       ? "Plano Básico"
-                      : politician.contractedPlan === "professional"
-                      ? "Plano Profissional"
+                      : politician.contractedPlan === "campanha_monitoramento_ativo"
+                      ? "Campanha de Monitoramento Ativo"
                       : "Plano Empresarial"}
                   </Badge>
                 </div>

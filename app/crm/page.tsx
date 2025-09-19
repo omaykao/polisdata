@@ -55,14 +55,14 @@ export default function CRMPage() {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold tracking-tight">CRM Pipeline</h1>
+          <h1 className="text-3xl font-bold tracking-tight">Pipeline de Engajamento de Campanha</h1>
           <p className="text-muted-foreground">
-            Gerencie prospects e clientes em processo de contratação
+            Gerencie candidatos e clientes em processo de contratação
           </p>
         </div>
         <Button onClick={handleAddNew}>
           <Plus className="mr-2 h-4 w-4" />
-          Novo Prospect
+          Novo Candidato
         </Button>
       </div>
 

@@ -31,7 +31,7 @@ interface KanbanBoardProps {
 }
 
 const STAGE_CONFIG: Record<PipelineStage, { label: string; color: string }> = {
-  lead: { label: "Lead", color: "bg-gray-100 dark:bg-gray-800" },
+  candidato: { label: "Candidato", color: "bg-gray-100 dark:bg-gray-800" },
   qualification: { label: "Qualificação", color: "bg-blue-50 dark:bg-blue-950" },
   proposal_sent: { label: "Proposta Enviada", color: "bg-purple-50 dark:bg-purple-950" },
   negotiation: { label: "Negociação", color: "bg-yellow-50 dark:bg-yellow-950" },
@@ -54,7 +54,7 @@ export function KanbanBoard({ cards, onCardMove, onCardEdit, onCardDelete }: Kan
 
   const cardsByStage = useMemo(() => {
     const grouped: Record<PipelineStage, CRMPipelineCard[]> = {
-      lead: [],
+      candidato: [],
       qualification: [],
       proposal_sent: [],
       negotiation: [],

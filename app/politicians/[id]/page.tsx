@@ -1,6 +1,7 @@
 "use client";
 
 import { useParams, useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
 import { PoliticianDashboard } from "@/components/politicians/politician-dashboard";
 import { SentimentHistoryChart } from "@/components/politicians/sentiment-history-chart";
 import { EmergingNarratives } from "@/components/politicians/emerging-narratives";
@@ -8,15 +9,23 @@ import { useData } from "@/lib/contexts/data-context";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
+import { Politician } from "@/lib/types";
 
 export default function PoliticianDetailPage() {
   const params = useParams();
   const router = useRouter();
   const { politicians, campaigns, socialMentions, emergingNarratives, isLoading } = useData();
+  const [politician, setPolitician] = useState<Politician | undefined>(undefined);
 
-  const politician = politicians.find(p => p.id === params.id);
-  const politicianCampaigns = campaigns.filter(c => c.politicianId === params.id);
-  const politicianMentions = socialMentions.filter(m => m.politicianId === params.id);
+  useEffect(() => {
+    if (params?.id && politicians.length > 0) {
+      const foundPolitician = politicians.find(p => p.id === params.id);
+      setPolitician(foundPolitician);
+    }
+  }, [params?.id, politicians]);
+
+  const politicianCampaigns = params?.id ? campaigns.filter(c => c.politicianId === params.id) : [];
+  const politicianMentions = params?.id ? socialMentions.filter(m => m.politicianId === params.id) : [];
 
   if (isLoading) {
     return (

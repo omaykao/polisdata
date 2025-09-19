@@ -132,8 +132,8 @@ export function PoliticianCard({
           <Badge variant="outline" className="text-xs">
             {politician.contractedPlan === "basic"
               ? "Plano Básico"
-              : politician.contractedPlan === "professional"
-              ? "Plano Profissional"
+              : politician.contractedPlan === "campanha_monitoramento_ativo"
+              ? "Campanha de Monitoramento Ativo"
               : "Plano Empresarial"}
           </Badge>
           <div className="flex gap-2">
