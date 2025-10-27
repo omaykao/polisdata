@@ -37,8 +37,7 @@ export default function PoliticiansPage() {
   };
 
   const handleAddNew = () => {
-    // TODO: Open new politician dialog
-    console.log("Add new politician");
+    router.push('/politicians/new');
   };
 
   if (isLoading) {
