@@ -5,11 +5,14 @@ import { useEffect, useState } from "react";
 import { PoliticianDashboard } from "@/components/politicians/politician-dashboard";
 import { SentimentHistoryChart } from "@/components/politicians/sentiment-history-chart";
 import { EmergingNarratives } from "@/components/politicians/emerging-narratives";
+import { AchievementsGallery } from "@/components/politicians/achievements-gallery";
 import { useData } from "@/lib/contexts/data-context";
 import { Button } from "@/components/ui/button";
-import { ArrowLeft } from "lucide-react";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { ArrowLeft, Award } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Politician } from "@/lib/types";
+import { generateAchievementsForPolitician } from "@/lib/mock-data";
 
 export default function PoliticianDetailPage() {
   const params = useParams();
@@ -27,6 +30,7 @@ export default function PoliticianDetailPage() {
   const politicianCampaigns = params?.id ? campaigns.filter(c => c.politicianId === params.id) : [];
   const politicianMentions = params?.id ? socialMentions.filter(m => m.politicianId === params.id) : [];
   const politicianNarratives = params?.id ? emergingNarratives.filter(n => n.politicianId === params.id) : [];
+  const politicianAchievements = params?.id ? generateAchievementsForPolitician(params.id as string, 6) : [];
 
   if (isLoading) {
     return (
@@ -114,6 +118,24 @@ export default function PoliticianDetailPage() {
           onTakeAction={handleTakeAction}
         />
       </div>
+
+      {/* Seção de Realizações e Projetos */}
+      <Card>
+        <CardHeader>
+          <div className="flex items-center gap-2">
+            <Award className="h-5 w-5 text-primary" />
+            <div>
+              <CardTitle>Realizações e Projetos</CardTitle>
+              <CardDescription>
+                Obras, emendas, iniciativas e lideranças para a população
+              </CardDescription>
+            </div>
+          </div>
+        </CardHeader>
+        <CardContent>
+          <AchievementsGallery achievements={politicianAchievements} />
+        </CardContent>
+      </Card>
     </div>
   );
 }

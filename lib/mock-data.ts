@@ -10,7 +10,8 @@ import {
   Notification,
   NotificationCategory,
   Activity,
-  DashboardKPIs
+  DashboardKPIs,
+  PoliticianAchievement
 } from './types';
 
 // Set a consistent seed for reproducibility
@@ -762,6 +763,150 @@ export function generateDashboardKPIs(politicians: Politician[]): DashboardKPIs 
     sentimentDistribution: generateSentimentAnalysis(),
     recentActivities: activities.sort((a, b) => b.timestamp.getTime() - a.timestamp.getTime())
   };
+}
+
+// Gerar realizações e projetos para políticos
+export function generateAchievementsForPolitician(politicianId: string, count: number = 6): PoliticianAchievement[] {
+  const achievements: PoliticianAchievement[] = [];
+
+  const achievementPool = [
+    // Projetos de Infraestrutura
+    {
+      title: 'Reforma da Praça Central',
+      description: 'Revitalização completa da praça com nova iluminação LED, bancos, playground infantil e área para exercícios.',
+      category: 'obra' as const,
+      location: 'Centro',
+      tags: ['infraestrutura', 'lazer', 'qualidade de vida']
+    },
+    {
+      title: 'Pavimentação da Rua das Flores',
+      description: 'Asfaltamento de 2.5km de via que atendia mais de 5 mil famílias com asfalto de qualidade e drenagem.',
+      category: 'obra' as const,
+      location: 'Bairro Jardim',
+      tags: ['infraestrutura', 'mobilidade']
+    },
+    {
+      title: 'Construção de Centro de Saúde',
+      description: 'Nova UBS com 10 consultórios, sala de vacinas, farmácia e atendimento 24h para a comunidade.',
+      category: 'projeto' as const,
+      location: 'Vila Nova',
+      tags: ['saúde', 'atendimento', 'bem-estar']
+    },
+
+    // Emendas Parlamentares
+    {
+      title: 'Emenda para Educação Municipal',
+      description: 'R$ 2 milhões destinados para reforma de 15 escolas municipais e compra de equipamentos.',
+      category: 'emenda' as const,
+      tags: ['educação', 'investimento', 'infraestrutura escolar']
+    },
+    {
+      title: 'Recursos para Hospital Regional',
+      description: 'Emenda de R$ 5 milhões para ampliação do hospital com novos leitos de UTI e equipamentos.',
+      category: 'emenda' as const,
+      tags: ['saúde', 'hospital', 'UTI']
+    },
+    {
+      title: 'Verba para Agricultura Familiar',
+      description: 'R$ 800 mil destinados a programas de apoio aos pequenos agricultores da região.',
+      category: 'emenda' as const,
+      tags: ['agricultura', 'desenvolvimento rural']
+    },
+
+    // Lideranças e Iniciativas
+    {
+      title: 'Programa Jovem Aprendiz',
+      description: 'Criação de programa que já inseriu mais de 500 jovens no mercado de trabalho.',
+      category: 'iniciativa' as const,
+      tags: ['emprego', 'juventude', 'capacitação']
+    },
+    {
+      title: 'Mutirão de Limpeza Comunitária',
+      description: 'Organização de mutirões mensais que mobilizaram mais de 2 mil voluntários.',
+      category: 'lideranca' as const,
+      tags: ['meio ambiente', 'comunidade', 'voluntariado']
+    },
+    {
+      title: 'Conselho Popular de Desenvolvimento',
+      description: 'Criação de conselho com participação da comunidade nas decisões municipais.',
+      category: 'lideranca' as const,
+      tags: ['participação popular', 'democracia', 'transparência']
+    },
+    {
+      title: 'Centro de Referência da Mulher',
+      description: 'Implementação de centro de apoio que já atendeu mais de 1.200 mulheres.',
+      category: 'projeto' as const,
+      tags: ['direitos da mulher', 'assistência social']
+    },
+
+    // Mais Projetos
+    {
+      title: 'Iluminação LED em 50 Ruas',
+      description: 'Substituição de iluminação pública por LED, gerando economia de 40% na conta de energia.',
+      category: 'obra' as const,
+      tags: ['iluminação', 'economia', 'segurança']
+    },
+    {
+      title: 'Programa de Capacitação Digital',
+      description: 'Cursos gratuitos de informática que formaram 800 pessoas em 2 anos.',
+      category: 'iniciativa' as const,
+      tags: ['educação', 'tecnologia', 'capacitação']
+    },
+    {
+      title: 'Quadra Poliesportiva Coberta',
+      description: 'Construção de quadra coberta no Bairro Esperança para práticas esportivas.',
+      category: 'obra' as const,
+      location: 'Bairro Esperança',
+      tags: ['esporte', 'lazer', 'juventude']
+    },
+    {
+      title: 'Cesta Básica Solidária',
+      description: 'Programa de distribuição mensal de cestas básicas para 300 famílias em situação de vulnerabilidade.',
+      category: 'iniciativa' as const,
+      tags: ['assistência social', 'combate à fome']
+    },
+    {
+      title: 'Reforma do Mercado Municipal',
+      description: 'Modernização completa do mercado com novos boxes e infraestrutura para 80 comerciantes.',
+      category: 'obra' as const,
+      location: 'Centro',
+      tags: ['economia', 'comércio', 'infraestrutura']
+    }
+  ];
+
+  // Usar ID do político como seed para consistência
+  const politicianSeed = politicianId.split('').reduce((acc, char) => acc + char.charCodeAt(0), 0);
+  faker.seed(politicianSeed);
+
+  const selectedAchievements = faker.helpers.arrayElements(achievementPool, count);
+
+  return selectedAchievements.map((achievement, index) => {
+    // Gerar offset fixo baseado no índice para consistência
+    const daysOffsetBase = [45, 90, 180, 365, 540, 720]; // Offsets fixos para cada realização
+    const daysAgo = daysOffsetBase[index % daysOffsetBase.length];
+    const status = daysAgo < 90 ? 'em_andamento' : daysAgo < 365 ? 'concluido' : 'concluido';
+
+    // Calcular data relativa à data atual
+    const now = new Date();
+    const achievementDate = new Date(now.getTime() - daysAgo * 24 * 60 * 60 * 1000);
+
+    return {
+      id: faker.string.uuid(),
+      politicianId,
+      title: achievement.title,
+      description: achievement.description,
+      category: achievement.category,
+      imageUrl: undefined, // Sem imagens
+      location: achievement.location,
+      budget: achievement.category === 'emenda' ? faker.number.int({ min: 500000, max: 5000000 }) :
+              achievement.category === 'obra' ? faker.number.int({ min: 200000, max: 3000000 }) :
+              undefined,
+      date: achievementDate,
+      status,
+      beneficiaries: faker.number.int({ min: 500, max: 10000 }),
+      tags: achievement.tags
+    };
+  });
 }
 
 // Export all mock data for easy access

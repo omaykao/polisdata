@@ -205,3 +205,18 @@ export interface Activity {
   description: string;
   timestamp: Date;
 }
+
+export interface PoliticianAchievement {
+  id: string;
+  politicianId: string;
+  title: string;
+  description: string;
+  category: 'projeto' | 'emenda' | 'lideranca' | 'iniciativa' | 'obra';
+  imageUrl?: string;
+  location?: string;
+  budget?: number;
+  date: Date;
+  status: 'concluido' | 'em_andamento' | 'planejado';
+  beneficiaries?: number;
+  tags: string[];
+}
