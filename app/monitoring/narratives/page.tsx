@@ -130,7 +130,7 @@ export default function EmergingNarrativesPage() {
       keywords: ["transporte digital", "app", "mobilidade urbana", "tecnologia pública"],
       sources: ["Twitter", "Instagram", "Blogs", "Notícias"],
       startDate: new Date(Date.now() - 3 * 24 * 60 * 60 * 1000),
-      geography: ["São Paulo", "Rio de Janeiro", "Belo Horizonte"],
+      geography: [],
       demographics: {
         ageGroups: [
           { group: "18-25", percentage: 35 },
@@ -163,7 +163,7 @@ export default function EmergingNarrativesPage() {
       sources: ["Facebook", "Twitter", "WhatsApp", "Notícias"],
       startDate: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000),
       peakDate: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000),
-      geography: ["Rio de Janeiro"],
+      geography: [],
       demographics: {
         ageGroups: [
           { group: "18-25", percentage: 15 },
@@ -195,7 +195,7 @@ export default function EmergingNarrativesPage() {
       keywords: ["educação híbrida", "ensino digital", "tecnologia educacional"],
       sources: ["LinkedIn", "Blogs Educacionais", "Notícias"],
       startDate: new Date(Date.now() - 30 * 24 * 60 * 60 * 1000),
-      geography: ["São Paulo", "Rio de Janeiro", "Brasília", "Porto Alegre"],
+      geography: [],
       demographics: {
         ageGroups: [
           { group: "18-25", percentage: 20 },
@@ -227,7 +227,7 @@ export default function EmergingNarrativesPage() {
       keywords: ["pesquisas eleitorais", "metodologia", "confiabilidade", "eleições"],
       sources: ["Twitter", "Facebook", "WhatsApp", "YouTube"],
       startDate: new Date(Date.now() - 5 * 24 * 60 * 60 * 1000),
-      geography: ["São Paulo"],
+      geography: [],
       demographics: {
         ageGroups: [
           { group: "18-25", percentage: 25 },
@@ -259,7 +259,7 @@ export default function EmergingNarrativesPage() {
       keywords: ["cidades verdes", "sustentabilidade", "energia renovável", "meio ambiente"],
       sources: ["Instagram", "LinkedIn", "Blogs", "Notícias"],
       startDate: new Date(Date.now() - 4 * 24 * 60 * 60 * 1000),
-      geography: ["São Paulo", "Curitiba", "Florianópolis", "Brasília"],
+      geography: [],
       demographics: {
         ageGroups: [
           { group: "18-25", percentage: 40 },
@@ -292,7 +292,7 @@ export default function EmergingNarrativesPage() {
       sources: ["Twitter", "Facebook", "Notícias", "YouTube"],
       startDate: new Date(Date.now() - 6 * 24 * 60 * 60 * 1000),
       peakDate: new Date(Date.now() - 1 * 24 * 60 * 60 * 1000),
-      geography: ["São Paulo", "Rio de Janeiro", "Brasília"],
+      geography: [],
       demographics: {
         ageGroups: [
           { group: "18-25", percentage: 20 },
@@ -324,7 +324,7 @@ export default function EmergingNarrativesPage() {
       keywords: ["reforma tributária", "impostos", "empresas", "economia", "simplificação"],
       sources: ["LinkedIn", "Notícias", "Blogs Econômicos"],
       startDate: new Date(Date.now() - 4 * 24 * 60 * 60 * 1000),
-      geography: ["São Paulo", "Brasília", "Rio de Janeiro", "Belo Horizonte"],
+      geography: [],
       demographics: {
         ageGroups: [
           { group: "18-25", percentage: 10 },
@@ -356,7 +356,7 @@ export default function EmergingNarrativesPage() {
       keywords: ["habitação popular", "moradia", "déficit habitacional", "políticas sociais"],
       sources: ["Facebook", "Instagram", "Notícias"],
       startDate: new Date(Date.now() - 25 * 24 * 60 * 60 * 1000),
-      geography: ["São Paulo", "Rio de Janeiro", "Salvador", "Fortaleza"],
+      geography: [],
       demographics: {
         ageGroups: [
           { group: "18-25", percentage: 25 },
@@ -389,7 +389,7 @@ export default function EmergingNarrativesPage() {
       sources: ["Instagram", "Twitter", "Facebook", "Notícias"],
       startDate: new Date(Date.now() - 8 * 24 * 60 * 60 * 1000),
       peakDate: new Date(Date.now() - 3 * 24 * 60 * 60 * 1000),
-      geography: ["Rio de Janeiro", "São Paulo", "Brasília", "Recife"],
+      geography: [],
       demographics: {
         ageGroups: [
           { group: "18-25", percentage: 30 },
@@ -421,7 +421,7 @@ export default function EmergingNarrativesPage() {
       keywords: ["internet rural", "inclusão digital", "conectividade", "tecnologia", "zona rural"],
       sources: ["LinkedIn", "Twitter", "Blogs", "Notícias"],
       startDate: new Date(Date.now() - 5 * 24 * 60 * 60 * 1000),
-      geography: ["Brasília", "Goiânia", "Campo Grande", "Cuiabá"],
+      geography: [],
       demographics: {
         ageGroups: [
           { group: "18-25", percentage: 35 },
