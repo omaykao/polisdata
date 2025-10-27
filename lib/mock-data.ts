@@ -17,8 +17,8 @@ import {
 // Set a consistent seed for reproducibility
 faker.seed(123);
 
-// Brazilian political parties - siglas reais
-const PARTIES = ['PT', 'PSDB', 'MDB', 'PP', 'PSD', 'PL', 'PDT', 'PSB', 'PSOL', 'REPUBLICANOS', 'UNIÃO', 'PCdoB', 'PV', 'PSC', 'NOVO', 'PATRIOTA', 'SOLIDARIEDADE', 'PROS', 'PODEMOS', 'CIDADANIA'];
+// Brazilian political parties - siglas reais (partidos de centro-direita e direita)
+const PARTIES = ['PSDB', 'MDB', 'PP', 'PSD', 'PL', 'PSB', 'REPUBLICANOS', 'UNIÃO', 'PV', 'PSC', 'NOVO', 'PATRIOTA', 'SOLIDARIEDADE', 'PROS', 'PODEMOS', 'CIDADANIA'];
 const POSITIONS = ['Dep. Estadual', 'Dep. Federal', 'Senador', 'Governador', 'Presidente'];
 
 // Brazilian politician names - nomes fictícios organizados por gênero
@@ -63,9 +63,8 @@ export function generatePolitician(): Politician {
   const now = new Date();
   // Contratos iniciados nos últimos 30 dias (sempre relativo à data atual)
   const contractStart = generateDateInCampaignPeriod({ maxDaysAgo: 30 });
-  // Contratos terminando nos próximos 30-60 dias (sempre relativo à data atual)
-  const daysUntilEnd = faker.number.int({ min: 30, max: 60 });
-  const contractEnd = new Date(now.getTime() + (daysUntilEnd * 24 * 60 * 60 * 1000));
+  // Data de término de contrato fixa: 10/10/2026
+  const contractEnd = new Date(2026, 9, 10); // Mês 9 = outubro (0-indexed)
 
   // Use Brazilian names in sequence, cycling through the list
   const name = BRAZILIAN_POLITICIANS[politicianNameIndex % BRAZILIAN_POLITICIANS.length];
@@ -185,6 +184,34 @@ export function generatePolitician(): Politician {
     .replace(/^\./, '')
     .replace(/\.$/, '');
 
+  // DDDs brasileiros (excluindo 62 que é Goiânia)
+  const brazilianDDDs = [
+    '11', '12', '13', '14', '15', '16', '17', '18', '19', // SP
+    '21', '22', '24', // RJ
+    '27', '28', // ES
+    '31', '32', '33', '34', '35', '37', '38', // MG
+    '41', '42', '43', '44', '45', '46', // PR
+    '47', '48', '49', // SC
+    '51', '53', '54', '55', // RS
+    '61', '63', '64', '65', '66', '67', '68', '69', // Centro-Oeste (menos 62)
+    '71', '73', '74', '75', '77', // BA
+    '79', // SE
+    '81', '87', // PE
+    '82', // AL
+    '83', // PB
+    '84', // RN
+    '85', '88', // CE
+    '86', '89', // PI
+    '91', '93', '94', // PA
+    '92', '97', // AM
+    '95', // RR
+    '96', // AP
+    '98', '99' // MA
+  ];
+
+  const ddd = faker.helpers.arrayElement(brazilianDDDs);
+  const phoneNumber = `(${ddd}) ${faker.number.int({ min: 90000, max: 99999 })}-${faker.number.int({ min: 1000, max: 9999 })}`;
+
   return {
     id: faker.string.uuid(),
     name: name,
@@ -192,17 +219,13 @@ export function generatePolitician(): Politician {
     position: faker.helpers.arrayElement(POSITIONS),
     avatarUrl: avatarUrl,
     email: email,
-    phone: faker.phone.number({ style: 'national' }),
+    phone: phoneNumber,
 
     perceptionScore: faker.number.int({ min: 40, max: 90 }),
     scoreTrend: faker.number.float({ min: -15, max: 15, multipleOf: 0.1 }),
     lastAnalysisDate: generateDateInCampaignPeriod({ maxDaysAgo: 7 }), // Sempre nos últimos 7 dias
 
-    status: faker.helpers.weightedArrayElement([
-      { value: 'active', weight: 8 },
-      { value: 'inactive', weight: 1 },
-      { value: 'suspended', weight: 1 }
-    ]) as 'active' | 'inactive' | 'suspended',
+    status: 'active', // Todos políticos com status ativo
     contractedPlan: faker.helpers.arrayElement(['basic', 'campanha_monitoramento_ativo', 'enterprise']) as 'basic' | 'campanha_monitoramento_ativo' | 'enterprise',
     contractStartDate: contractStart,
     contractEndDate: contractEnd,
@@ -318,7 +341,24 @@ export function generateCampaign(politicianId: string): WhatsAppCampaign {
   const total = faker.number.int({ min: 10000, max: 100000 });
   const sent = faker.number.int({ min: total * 0.5, max: total });
   const delivered = faker.number.int({ min: sent * 0.85, max: sent });
-  const responses = faker.number.int({ min: delivered * 0.05, max: delivered * 0.25 });
+  // Taxa de resposta aumentada para 30-75%
+  const responses = faker.number.int({ min: delivered * 0.30, max: delivered * 0.75 });
+
+  // Gerar data de criação primeiro (20-30 dias atrás)
+  const now = new Date();
+  const daysAgoCreated = faker.number.int({ min: 20, max: 30 });
+  const createdAt = new Date(now.getTime() - (daysAgoCreated * 24 * 60 * 60 * 1000));
+
+  // Data de início: entre a criação e agora (sempre DEPOIS da criação)
+  const daysAfterCreation = faker.number.int({ min: 1, max: Math.min(5, daysAgoCreated - 1) });
+  const startedAt = new Date(createdAt.getTime() + (daysAfterCreation * 24 * 60 * 60 * 1000));
+
+  // Data de conclusão: alguns dias DEPOIS do início
+  const daysToComplete = faker.number.int({ min: 3, max: 10 });
+  const completedAt = new Date(startedAt.getTime() + (daysToComplete * 24 * 60 * 60 * 1000));
+
+  // Scheduled date: antes do início
+  const scheduledDate = new Date(startedAt.getTime() - (24 * 60 * 60 * 1000)); // 1 dia antes do início
 
   return {
     id: faker.string.uuid(),
@@ -346,12 +386,12 @@ export function generateCampaign(politicianId: string): WhatsAppCampaign {
     engagementScore: faker.number.int({ min: 40, max: 90 }),
 
     status: faker.helpers.arrayElement(['draft', 'scheduled', 'active', 'paused', 'completed']) as 'draft' | 'scheduled' | 'active' | 'paused' | 'completed',
-    scheduledDate: generateDateInCampaignPeriod({ maxDaysAgo: 7, future: true }), // Agendadas nos próximos 7 dias
-    startedAt: generateDateInCampaignPeriod({ maxDaysAgo: 7 }), // Iniciadas nos últimos 7 dias
-    completedAt: generateDateInCampaignPeriod({ daysOffset: 1 }), // Sempre 1 dia atrás
+    scheduledDate,
+    startedAt,
+    completedAt,
 
-    createdAt: generateDateInCampaignPeriod({ maxDaysAgo: 30 }), // Criadas nos últimos 30 dias
-    updatedAt: generateDateInCampaignPeriod({ daysOffset: 1 }) // Sempre 1 dia atrás
+    createdAt,
+    updatedAt: now
   };
 }
 
