@@ -278,6 +278,168 @@ export default function EmergingNarrativesPage() {
       credibilityScore: 8.2,
       riskLevel: "low",
     },
+    {
+      id: "6",
+      title: "Segurança Pública e Tecnologia de Vigilância",
+      description: "Debate crescente sobre o uso de câmeras com reconhecimento facial e tecnologias de monitoramento para melhorar a segurança pública nas grandes cidades.",
+      category: "trending",
+      sentiment: "mixed",
+      strength: 8.1,
+      velocity: 52.6,
+      reach: 2890000,
+      mentions: 19430,
+      keywords: ["câmeras", "reconhecimento facial", "segurança pública", "vigilância", "tecnologia"],
+      sources: ["Twitter", "Facebook", "Notícias", "YouTube"],
+      startDate: new Date(Date.now() - 6 * 24 * 60 * 60 * 1000),
+      peakDate: new Date(Date.now() - 1 * 24 * 60 * 60 * 1000),
+      geography: ["São Paulo", "Rio de Janeiro", "Brasília"],
+      demographics: {
+        ageGroups: [
+          { group: "18-25", percentage: 20 },
+          { group: "26-35", percentage: 35 },
+          { group: "36-50", percentage: 30 },
+          { group: "50+", percentage: 15 },
+        ],
+        gender: { male: 60, female: 40 },
+        education: [
+          { group: "Superior", percentage: 50 },
+          { group: "Médio", percentage: 40 },
+          { group: "Fundamental", percentage: 10 },
+        ],
+      },
+      relatedTopics: ["Segurança", "Tecnologia", "Privacidade", "Direitos Civis"],
+      credibilityScore: 7.5,
+      riskLevel: "high",
+    },
+    {
+      id: "7",
+      title: "Reforma Tributária e Impacto nas Empresas",
+      description: "Discussão sobre os impactos da reforma tributária nas pequenas e médias empresas, com foco na simplificação de impostos e redução de burocracia.",
+      category: "emerging",
+      sentiment: "neutral",
+      strength: 7.3,
+      velocity: 41.2,
+      reach: 1920000,
+      mentions: 13560,
+      keywords: ["reforma tributária", "impostos", "empresas", "economia", "simplificação"],
+      sources: ["LinkedIn", "Notícias", "Blogs Econômicos"],
+      startDate: new Date(Date.now() - 4 * 24 * 60 * 60 * 1000),
+      geography: ["São Paulo", "Brasília", "Rio de Janeiro", "Belo Horizonte"],
+      demographics: {
+        ageGroups: [
+          { group: "18-25", percentage: 10 },
+          { group: "26-35", percentage: 35 },
+          { group: "36-50", percentage: 40 },
+          { group: "50+", percentage: 15 },
+        ],
+        gender: { male: 65, female: 35 },
+        education: [
+          { group: "Superior", percentage: 75 },
+          { group: "Médio", percentage: 20 },
+          { group: "Fundamental", percentage: 5 },
+        ],
+      },
+      relatedTopics: ["Economia", "Governo", "Empresas", "Tributação"],
+      credibilityScore: 8.0,
+      riskLevel: "medium",
+    },
+    {
+      id: "8",
+      title: "Habitação Popular e Déficit Habitacional",
+      description: "Crescimento de narrativas sobre a necessidade de programas de habitação popular para reduzir o déficit habitacional em grandes centros urbanos.",
+      category: "stable",
+      sentiment: "positive",
+      strength: 6.9,
+      velocity: 15.4,
+      reach: 1430000,
+      mentions: 11280,
+      keywords: ["habitação popular", "moradia", "déficit habitacional", "políticas sociais"],
+      sources: ["Facebook", "Instagram", "Notícias"],
+      startDate: new Date(Date.now() - 25 * 24 * 60 * 60 * 1000),
+      geography: ["São Paulo", "Rio de Janeiro", "Salvador", "Fortaleza"],
+      demographics: {
+        ageGroups: [
+          { group: "18-25", percentage: 25 },
+          { group: "26-35", percentage: 35 },
+          { group: "36-50", percentage: 30 },
+          { group: "50+", percentage: 10 },
+        ],
+        gender: { male: 42, female: 58 },
+        education: [
+          { group: "Superior", percentage: 35 },
+          { group: "Médio", percentage: 45 },
+          { group: "Fundamental", percentage: 20 },
+        ],
+      },
+      relatedTopics: ["Habitação", "Políticas Sociais", "Urbanismo"],
+      credibilityScore: 7.6,
+      riskLevel: "medium",
+    },
+    {
+      id: "9",
+      title: "Violência Doméstica e Rede de Proteção",
+      description: "Aumento da discussão sobre violência doméstica e a necessidade de fortalecer a rede de proteção às vítimas, incluindo delegacias especializadas e casas de abrigo.",
+      category: "trending",
+      sentiment: "negative",
+      strength: 8.7,
+      velocity: 58.3,
+      reach: 3120000,
+      mentions: 24890,
+      keywords: ["violência doméstica", "proteção", "direitos da mulher", "lei maria da penha"],
+      sources: ["Instagram", "Twitter", "Facebook", "Notícias"],
+      startDate: new Date(Date.now() - 8 * 24 * 60 * 60 * 1000),
+      peakDate: new Date(Date.now() - 3 * 24 * 60 * 60 * 1000),
+      geography: ["Rio de Janeiro", "São Paulo", "Brasília", "Recife"],
+      demographics: {
+        ageGroups: [
+          { group: "18-25", percentage: 30 },
+          { group: "26-35", percentage: 35 },
+          { group: "36-50", percentage: 25 },
+          { group: "50+", percentage: 10 },
+        ],
+        gender: { male: 30, female: 70 },
+        education: [
+          { group: "Superior", percentage: 55 },
+          { group: "Médio", percentage: 35 },
+          { group: "Fundamental", percentage: 10 },
+        ],
+      },
+      relatedTopics: ["Direitos Humanos", "Segurança", "Assistência Social"],
+      credibilityScore: 8.8,
+      riskLevel: "critical",
+    },
+    {
+      id: "10",
+      title: "Conectividade Digital e Inclusão Rural",
+      description: "Narrativa emergente sobre a necessidade de expandir a conectividade digital para áreas rurais, garantindo acesso à internet de qualidade e inclusão digital.",
+      category: "emerging",
+      sentiment: "positive",
+      strength: 7.0,
+      velocity: 38.7,
+      reach: 1580000,
+      mentions: 10240,
+      keywords: ["internet rural", "inclusão digital", "conectividade", "tecnologia", "zona rural"],
+      sources: ["LinkedIn", "Twitter", "Blogs", "Notícias"],
+      startDate: new Date(Date.now() - 5 * 24 * 60 * 60 * 1000),
+      geography: ["Brasília", "Goiânia", "Campo Grande", "Cuiabá"],
+      demographics: {
+        ageGroups: [
+          { group: "18-25", percentage: 35 },
+          { group: "26-35", percentage: 40 },
+          { group: "36-50", percentage: 20 },
+          { group: "50+", percentage: 5 },
+        ],
+        gender: { male: 55, female: 45 },
+        education: [
+          { group: "Superior", percentage: 60 },
+          { group: "Médio", percentage: 35 },
+          { group: "Fundamental", percentage: 5 },
+        ],
+      },
+      relatedTopics: ["Tecnologia", "Inclusão Digital", "Desenvolvimento Rural"],
+      credibilityScore: 7.4,
+      riskLevel: "low",
+    },
   ];
 
   const narrativeGrowth = Array.from({ length: 7 }, (_, i) => {
@@ -475,9 +637,9 @@ export default function EmergingNarrativesPage() {
           <CardContent>
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-2xl font-bold">127</p>
+                <p className="text-2xl font-bold">142</p>
                 <p className="text-xs text-muted-foreground">
-                  <span className="text-green-600">↑ 15</span> novas hoje
+                  <span className="text-green-600">↑ 18</span> novas hoje
                 </p>
               </div>
               <Activity className="h-8 w-8 text-muted-foreground opacity-50" />
