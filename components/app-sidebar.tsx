@@ -58,10 +58,6 @@ const navMain = [
         url: "/politicians",
       },
       {
-        title: "Análise Individual",
-        url: "/politicians/analysis",
-      },
-      {
         title: "Comparações",
         url: "/politicians/compare",
       },

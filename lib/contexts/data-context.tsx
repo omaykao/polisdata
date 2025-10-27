@@ -17,6 +17,7 @@ import {
   generateNotifications,
   generateDashboardKPIs,
   generateEmergingNarratives,
+  generateEmergingNarrativesForPolitician,
   generateCampaign,
   generateSocialMention,
 } from '@/lib/mock-data';
@@ -92,18 +93,25 @@ export function DataProvider({ children }: { children: React.ReactNode }) {
     const newCRMCards = generateCRMCards(15);
     const newNotifications = generateNotifications(10);
     const newDashboard = generateDashboardKPIs(newPoliticians);
-    const newNarratives = generateEmergingNarratives(5);
 
-    // Generate campaigns for politicians
+    // Generate unique narratives for each politician (3-5 narratives per politician)
+    const newNarratives = newPoliticians.flatMap(p =>
+      generateEmergingNarrativesForPolitician(p.id, Math.floor(Math.random() * 3) + 3)
+    );
+
+    // Generate campaigns for ALL politicians (2-4 campaigns per politician)
     const newCampaigns = newPoliticians
-      .filter(p => p.status === 'active')
-      .slice(0, 10)
-      .map(p => generateCampaign(p.id));
+      .flatMap(p => {
+        const campaignCount = Math.floor(Math.random() * 3) + 2; // 2-4 campanhas
+        return Array.from({ length: campaignCount }, () => generateCampaign(p.id));
+      });
 
-    // Generate social mentions for politicians
+    // Generate social mentions for ALL politicians (5-10 mentions per politician)
     const newMentions = newPoliticians
-      .filter(p => p.status === 'active')
-      .flatMap(p => Array.from({ length: 3 }, () => generateSocialMention(p.id)));
+      .flatMap(p => {
+        const mentionCount = Math.floor(Math.random() * 6) + 5; // 5-10 menções
+        return Array.from({ length: mentionCount }, () => generateSocialMention(p.id));
+      });
 
     setPoliticians(newPoliticians);
     setCRMCards(newCRMCards);

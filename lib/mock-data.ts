@@ -60,10 +60,11 @@ let politicianNameIndex = 0;
 
 export function generatePolitician(): Politician {
   const now = new Date();
-  // Contratos iniciados entre junho e agosto
-  const contractStart = generateDateInCampaignPeriod({ monthRange: { start: 5, end: 7 } });
-  // Contratos terminando em setembro
-  const contractEnd = generateDateInCampaignPeriod({ monthRange: { start: 8, end: 8 }, future: true });
+  // Contratos iniciados nos últimos 30 dias (sempre relativo à data atual)
+  const contractStart = generateDateInCampaignPeriod({ maxDaysAgo: 30 });
+  // Contratos terminando nos próximos 30-60 dias (sempre relativo à data atual)
+  const daysUntilEnd = faker.number.int({ min: 30, max: 60 });
+  const contractEnd = new Date(now.getTime() + (daysUntilEnd * 24 * 60 * 60 * 1000));
 
   // Use Brazilian names in sequence, cycling through the list
   const name = BRAZILIAN_POLITICIANS[politicianNameIndex % BRAZILIAN_POLITICIANS.length];
@@ -168,12 +169,11 @@ export function generatePolitician(): Politician {
   const lastName = nameParts[nameParts.length - 1];
   const middleName = nameParts.length > 2 ? nameParts[1] : '';
 
-  // Diferentes formatos de email
+  // Todos os emails agora são @gmail.com
   const emailFormats = [
     `${firstName}.${lastName}@gmail.com`,
-    `${firstName}${lastName}@hotmail.com`,
-    `${firstName}.${middleName ? middleName[0] + '.' : ''}${lastName}@outlook.com`,
-    `${firstName}_${lastName}@yahoo.com.br`,
+    `${firstName}${lastName}@gmail.com`,
+    `${firstName}.${middleName ? middleName[0] + '.' : ''}${lastName}@gmail.com`,
     `${lastName}.${firstName}@gmail.com`,
     `${firstName}${lastName}${faker.number.int({ min: 1, max: 99 })}@gmail.com`
   ];
@@ -195,7 +195,7 @@ export function generatePolitician(): Politician {
 
     perceptionScore: faker.number.int({ min: 40, max: 90 }),
     scoreTrend: faker.number.float({ min: -15, max: 15, multipleOf: 0.1 }),
-    lastAnalysisDate: generateDateInCampaignPeriod({ days: 7 }),
+    lastAnalysisDate: generateDateInCampaignPeriod({ maxDaysAgo: 7 }), // Sempre nos últimos 7 dias
 
     status: faker.helpers.weightedArrayElement([
       { value: 'active', weight: 8 },
@@ -223,23 +223,73 @@ export function generateSentimentAnalysis(): SentimentAnalysis {
     neutral,
     confidence: faker.number.float({ min: 0.7, max: 0.95, multipleOf: 0.01 }),
     sampleSize: faker.number.int({ min: 500, max: 5000 }),
-    date: generateDateInCampaignPeriod({ days: 1 })
+    date: generateDateInCampaignPeriod({ daysOffset: 1 }) // Sempre 1 dia atrás
   };
 }
 
-export function generateEmergingNarratives(count: number = 3): EmergingNarrative[] {
-  const narratives = [
+// Gerador de narrativas específicas por político
+export function generateEmergingNarrativesForPolitician(politicianId: string, count: number = 3): EmergingNarrative[] {
+  // Pool expandido de narrativas com diferentes temas
+  const narrativePool = [
+    // Economia e Desenvolvimento
     'Associação com agronegócio cresce nas redes',
+    'Defesa de incentivos fiscais para indústria local',
+    'Propostas para redução de impostos ganham tração',
+    'Críticas sobre modelo econômico atual',
+    'Apoio ao empreendedorismo local em alta',
+    'Debate sobre política de juros repercute',
+
+    // Social e Políticas Públicas
     'Críticas sobre gastos públicos aumentam',
     'Apoio a projetos sociais ganha destaque',
+    'Propostas para moradia popular em discussão',
+    'Defesa de políticas de inclusão social',
+    'Debate sobre distribuição de renda',
+
+    // Transparência e Governança
     'Questionamentos sobre transparência',
+    'Prestação de contas ganha visibilidade positiva',
+    'Denúncias de irregularidades em contratos',
+    'Compromisso com governo aberto destacado',
+
+    // Juventude e Educação
     'Crescimento entre jovens eleitores',
+    'Propostas para reforma educacional em pauta',
+    'Apoio a programas de bolsas estudantis',
+    'Críticas ao sistema educacional atual',
+
+    // Votações e Posicionamentos
     'Polêmica sobre votação recente',
+    'Posicionamento sobre lei ambiental repercute',
+    'Voto contrário a projeto popular gera críticas',
+    'Liderança em aprovação de projeto importante',
+
+    // Comunicação e Mídia
     'Declarações sobre economia repercutem',
-    'Proposta de lei gera debate'
+    'Entrevista polêmica viraliza nas redes',
+    'Participação em debate gera repercussão',
+    'Presença em eventos comunitários destacada',
+
+    // Saúde e Infraestrutura
+    'Propostas para reforma da saúde em debate',
+    'Críticas à gestão hospitalar atual',
+    'Defesa de investimentos em infraestrutura',
+    'Projeto de saneamento básico em destaque',
+
+    // Segurança
+    'Posicionamento sobre segurança pública divide opiniões',
+    'Propostas de reforma policial em discussão',
+    'Críticas à política de segurança atual'
   ];
 
-  return faker.helpers.arrayElements(narratives, count).map(narrative => ({
+  // Usar o ID do político como seed para garantir consistência mas variação
+  const politicianSeed = politicianId.split('').reduce((acc, char) => acc + char.charCodeAt(0), 0);
+  faker.seed(politicianSeed);
+
+  // Selecionar narrativas únicas para este político
+  const selectedNarratives = faker.helpers.arrayElements(narrativePool, count);
+
+  return selectedNarratives.map(narrative => ({
     id: faker.string.uuid(),
     narrative,
     sentiment: faker.helpers.arrayElement(['positive', 'negative', 'mixed']) as 'positive' | 'negative' | 'mixed',
@@ -249,12 +299,18 @@ export function generateEmergingNarratives(count: number = 3): EmergingNarrative
     mentionCount: faker.number.int({ min: 50, max: 5000 }),
     growthRate: faker.number.float({ min: -20, max: 150, multipleOf: 0.1 }),
     keywords: faker.helpers.arrayElements(
-      ['reforma', 'economia', 'educação', 'saúde', 'segurança', 'corrupção', 'desenvolvimento', 'emprego'],
+      ['reforma', 'economia', 'educação', 'saúde', 'segurança', 'corrupção', 'desenvolvimento', 'emprego', 'transparência', 'infraestrutura', 'social', 'ambiental'],
       faker.number.int({ min: 2, max: 5 })
     ),
-    firstDetected: generateDateInCampaignPeriod({ days: 14 }),
-    status: faker.helpers.arrayElement(['emerging', 'trending', 'declining', 'resolved']) as 'emerging' | 'trending' | 'declining' | 'resolved'
+    firstDetected: generateDateInCampaignPeriod({ maxDaysAgo: 14 }),
+    status: faker.helpers.arrayElement(['emerging', 'trending', 'declining', 'resolved']) as 'emerging' | 'trending' | 'declining' | 'resolved',
+    politicianId // Adicionar referência ao político
   }));
+}
+
+// Manter função original para compatibilidade
+export function generateEmergingNarratives(count: number = 3): EmergingNarrative[] {
+  return generateEmergingNarrativesForPolitician(faker.string.uuid(), count);
 }
 
 export function generateCampaign(politicianId: string): WhatsAppCampaign {
@@ -289,50 +345,66 @@ export function generateCampaign(politicianId: string): WhatsAppCampaign {
     engagementScore: faker.number.int({ min: 40, max: 90 }),
 
     status: faker.helpers.arrayElement(['draft', 'scheduled', 'active', 'paused', 'completed']) as 'draft' | 'scheduled' | 'active' | 'paused' | 'completed',
-    scheduledDate: generateDateInCampaignPeriod({ monthRange: { start: 7, end: 8 }, future: true }),
-    startedAt: generateDateInCampaignPeriod({ days: 7 }),
-    completedAt: generateDateInCampaignPeriod({ days: 1 }),
+    scheduledDate: generateDateInCampaignPeriod({ maxDaysAgo: 7, future: true }), // Agendadas nos próximos 7 dias
+    startedAt: generateDateInCampaignPeriod({ maxDaysAgo: 7 }), // Iniciadas nos últimos 7 dias
+    completedAt: generateDateInCampaignPeriod({ daysOffset: 1 }), // Sempre 1 dia atrás
 
-    createdAt: generateDateInCampaignPeriod({ monthRange: { start: 5, end: 6 } }),
-    updatedAt: generateDateInCampaignPeriod({ days: 1 })
+    createdAt: generateDateInCampaignPeriod({ maxDaysAgo: 30 }), // Criadas nos últimos 30 dias
+    updatedAt: generateDateInCampaignPeriod({ daysOffset: 1 }) // Sempre 1 dia atrás
   };
 }
 
-// Helper function to generate dates between June and September
+// Helper function to generate dates dynamically based on current date
+// Esta função SEMPRE retorna datas relativas à data atual do sistema
 function generateDateInCampaignPeriod(options?: {
   past?: boolean,
   future?: boolean,
-  days?: number,
+  daysOffset?: number, // Número FIXO de dias de offset (sempre o mesmo offset relativo)
+  maxDaysAgo?: number, // Para gerar offset aleatório dentro de um intervalo
   monthRange?: { start: number, end: number }
 }): Date {
   const now = new Date();
-  const currentYear = now.getFullYear();
 
-  // Default to June-September (months 5-8 in JavaScript, 0-indexed)
-  const startMonth = options?.monthRange?.start || 5; // June
-  const endMonth = options?.monthRange?.end || 8; // September
+  // Se especificado 'daysOffset', sempre retornar a data com esse offset fixo
+  if (options?.daysOffset !== undefined) {
+    const offsetMs = options.daysOffset * 24 * 60 * 60 * 1000;
 
-  // Generate a random month between June and September
-  const month = faker.number.int({ min: startMonth, max: endMonth });
-
-  // Generate a random day within the month
-  const daysInMonth = new Date(currentYear, month + 1, 0).getDate();
-  const day = faker.number.int({ min: 1, max: daysInMonth });
-
-  let baseDate = new Date(currentYear, month, day);
-
-  // If we need a date in the past few days, adjust from the base date
-  if (options?.days) {
-    const offsetMs = options.days * 24 * 60 * 60 * 1000;
-    baseDate = new Date(baseDate.getTime() - Math.random() * offsetMs);
+    if (options?.future) {
+      // Data futura com offset fixo (ex: sempre 30 dias no futuro)
+      return new Date(now.getTime() + offsetMs);
+    } else {
+      // Data passada com offset fixo (ex: sempre 1 dia atrás)
+      return new Date(now.getTime() - offsetMs);
+    }
   }
 
-  // Ensure the date is not in the future
-  if (baseDate > now && !options?.future) {
-    baseDate = now;
+  // Se especificado 'maxDaysAgo', gerar um offset aleatório que será usado consistentemente
+  if (options?.maxDaysAgo) {
+    const daysAgo = faker.number.int({ min: 0, max: options.maxDaysAgo });
+    const offsetMs = daysAgo * 24 * 60 * 60 * 1000;
+
+    if (options?.future) {
+      return new Date(now.getTime() + offsetMs);
+    } else {
+      return new Date(now.getTime() - offsetMs);
+    }
   }
 
-  return baseDate;
+  // Se especificado 'monthRange', gerar offset em meses
+  if (options?.monthRange) {
+    const { start, end } = options.monthRange;
+    const monthsOffset = faker.number.int({ min: start, max: end });
+
+    if (options?.future) {
+      return new Date(now.getFullYear(), now.getMonth() + monthsOffset, now.getDate());
+    } else {
+      return new Date(now.getFullYear(), now.getMonth() - monthsOffset, now.getDate());
+    }
+  }
+
+  // Caso padrão: gerar data com offset aleatório nos últimos 30 dias
+  const daysAgo = faker.number.int({ min: 0, max: 30 });
+  return new Date(now.getTime() - (daysAgo * 24 * 60 * 60 * 1000));
 }
 
 // Brazilian social media authors
@@ -371,8 +443,8 @@ export function generateSocialMention(politicianId: string): SocialMediaMention 
     isInfluencer: faker.datatype.boolean({ probability: 0.1 }),
     influencerScore: faker.number.int({ min: 60, max: 100 }),
 
-    publishedAt: generateDateInCampaignPeriod({ days: 1 }),
-    capturedAt: generateDateInCampaignPeriod({ days: 1 })
+    publishedAt: generateDateInCampaignPeriod({ maxDaysAgo: 30 }), // Menções nos últimos 30 dias
+    capturedAt: generateDateInCampaignPeriod({ maxDaysAgo: 30 })
   };
 }
 
@@ -432,13 +504,13 @@ export function generateCRMCard(): CRMPipelineCard {
     proposalValue: faker.number.int({ min: 5000, max: 100000 }),
     notes: faker.lorem.sentence(),
     nextAction: faker.helpers.arrayElement(['Enviar proposta', 'Agendar reunião', 'Enviar contrato', 'Follow-up']),
-    nextActionDate: generateDateInCampaignPeriod({ monthRange: { start: 7, end: 8 }, future: true }),
+    nextActionDate: generateDateInCampaignPeriod({ maxDaysAgo: 7, future: true }), // Próxima ação nos próximos 7 dias
 
     probability: faker.number.int({ min: 10, max: 90 }),
-    estimatedCloseDate: generateDateInCampaignPeriod({ monthRange: { start: 8, end: 8 }, future: true }),
+    estimatedCloseDate: generateDateInCampaignPeriod({ maxDaysAgo: 30, future: true }), // Sempre 0-30 dias no futuro
 
-    createdAt: generateDateInCampaignPeriod({ monthRange: { start: 5, end: 6 } }),
-    updatedAt: generateDateInCampaignPeriod({ days: 1 })
+    createdAt: generateDateInCampaignPeriod({ maxDaysAgo: 30 }), // Criados nos últimos 30 dias
+    updatedAt: generateDateInCampaignPeriod({ daysOffset: 1 }) // Sempre 1 dia atrás
   };
 }
 
@@ -593,8 +665,8 @@ export function generateSocialMediaNotification(): Notification {
       { value: 'resolved', weight: 1 },
       { value: 'dismissed', weight: 1 }
     ]) as 'unread' | 'read' | 'resolved' | 'dismissed',
-    createdAt: generateDateInCampaignPeriod({ days: 2 }),
-    readAt: generateDateInCampaignPeriod({ days: 1 }),
+    createdAt: generateDateInCampaignPeriod({ maxDaysAgo: 30 }), // Notificações nos últimos 30 dias
+    readAt: generateDateInCampaignPeriod({ maxDaysAgo: 15 }), // Lidas nos últimos 15 dias
     resolvedAt: undefined
   };
 }
@@ -642,9 +714,9 @@ export function generateNotification(): Notification {
       { value: 'dismissed', weight: 1 }
     ]) as 'unread' | 'read' | 'resolved' | 'dismissed',
 
-    createdAt: generateDateInCampaignPeriod({ days: 7 }),
-    readAt: generateDateInCampaignPeriod({ days: 5 }),
-    resolvedAt: generateDateInCampaignPeriod({ days: 3 })
+    createdAt: generateDateInCampaignPeriod({ maxDaysAgo: 30 }), // Criadas nos últimos 30 dias
+    readAt: generateDateInCampaignPeriod({ maxDaysAgo: 15 }), // Lidas nos últimos 15 dias
+    resolvedAt: generateDateInCampaignPeriod({ maxDaysAgo: 7 }) // Resolvidas nos últimos 7 dias
   };
 }
 
@@ -660,7 +732,7 @@ export function generateActivity(politicianName: string): Activity {
       'Alerta de menções negativas',
       'Score de percepção atualizado'
     ]),
-    timestamp: generateDateInCampaignPeriod({ days: 1 })
+    timestamp: generateDateInCampaignPeriod({ maxDaysAgo: 30 }) // Atividades nos últimos 30 dias
   };
 }
 
@@ -686,7 +758,7 @@ export function generateDashboardKPIs(politicians: Politician[]): DashboardKPIs 
     activeClients,
     ongoingCampaigns: faker.number.int({ min: 8, max: 15 }),
     messagesLast30Days: faker.number.int({ min: 800000, max: 1500000 }),
-    averageResponseRate: faker.number.float({ min: 15, max: 25, multipleOf: 0.1 }),
+    averageResponseRate: 35.7, // Taxa de resposta fixa em 35.7%
     sentimentDistribution: generateSentimentAnalysis(),
     recentActivities: activities.sort((a, b) => b.timestamp.getTime() - a.timestamp.getTime())
   };

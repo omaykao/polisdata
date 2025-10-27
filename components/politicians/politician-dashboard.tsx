@@ -117,6 +117,10 @@ export function PoliticianDashboard({
                 <MessageSquare className="mr-2 h-4 w-4" />
                 Nova Campanha
               </Button>
+              <Button variant="outline" onClick={() => window.location.href = `/politicians/${politician.id}/analytics`}>
+                <BarChart3 className="mr-2 h-4 w-4" />
+                Análise Individual
+              </Button>
               <Button onClick={onGenerateReport}>
                 <FileText className="mr-2 h-4 w-4" />
                 Gerar Relatório

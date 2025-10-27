@@ -46,6 +46,7 @@ export interface EmergingNarrative {
   keywords: string[];
   firstDetected: Date;
   status: 'emerging' | 'trending' | 'declining' | 'resolved';
+  politicianId?: string; // Opcional para narrativas gerais
 }
 
 export interface WhatsAppCampaign {

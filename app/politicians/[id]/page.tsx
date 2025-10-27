@@ -26,6 +26,7 @@ export default function PoliticianDetailPage() {
 
   const politicianCampaigns = params?.id ? campaigns.filter(c => c.politicianId === params.id) : [];
   const politicianMentions = params?.id ? socialMentions.filter(m => m.politicianId === params.id) : [];
+  const politicianNarratives = params?.id ? emergingNarratives.filter(n => n.politicianId === params.id) : [];
 
   if (isLoading) {
     return (
@@ -108,7 +109,7 @@ export default function PoliticianDetailPage() {
       <div className="grid gap-6 lg:grid-cols-2">
         <SentimentHistoryChart politicianId={politician.id} />
         <EmergingNarratives
-          narratives={emergingNarratives}
+          narratives={politicianNarratives}
           onViewDetails={handleViewNarrativeDetails}
           onTakeAction={handleTakeAction}
         />

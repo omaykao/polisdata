@@ -1,16 +1,18 @@
 "use client";
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import { PoliticiansDataTable } from "@/components/politicians/data-table";
 import { PoliticianCard } from "@/components/politicians/politician-card";
 import { useData } from "@/lib/contexts/data-context";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Plus, LayoutGrid, List } from "lucide-react";
+import { Plus, LayoutGrid, List, GitCompare } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Politician } from "@/lib/types";
 
 export default function PoliticiansPage() {
+  const router = useRouter();
   const { politicians, isLoading } = useData();
   const [view, setView] = useState<"table" | "grid">("table");
 
@@ -65,10 +67,16 @@ export default function PoliticiansPage() {
             Gerencie e monitore os políticos cadastrados na plataforma
           </p>
         </div>
-        <Button onClick={handleAddNew}>
-          <Plus className="mr-2 h-4 w-4" />
-          Novo Político
-        </Button>
+        <div className="flex gap-2">
+          <Button variant="outline" onClick={() => router.push('/politicians/compare')}>
+            <GitCompare className="mr-2 h-4 w-4" />
+            Comparar
+          </Button>
+          <Button onClick={handleAddNew}>
+            <Plus className="mr-2 h-4 w-4" />
+            Novo Político
+          </Button>
+        </div>
       </div>
 
       <div className="grid gap-4 md:grid-cols-4">
